@@ -3,6 +3,9 @@ import path from "path";
 import rootDir from "../util/path.js";
 
 const router = express.Router();
+
+ const products: any[] = []
+
 router.get(
   "/add-product",
   (req: Request, res: Response, next: NextFunction) => {
@@ -14,13 +17,13 @@ router.get(
 
 router.post("/product", (req: Request, res: Response, next: NextFunction) => {
   // console.log('this is the product info')
-  console.log(req.body.name);
-  console.log(req.body);
+
   // if (!req.body.name) {
   //     return res.status(400).json({error: "something went wrong"})
   // }
-  console.log(req.body);
+  products.push({title: req.body.title});
   res.redirect("/");
 });
 
-export { router as adminRoute };
+export { router as adminRoute, products };
+
