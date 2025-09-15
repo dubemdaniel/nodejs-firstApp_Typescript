@@ -2,11 +2,12 @@
   "name": "first-app",
   "version": "1.0.0",
   "description": " a random nodejs practice app",
+  "type": "module",
   "main": "first-app.js",
   "scripts": {
+    "dev": "ts-node first-app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon first-app.js"
-  },
+ "start": "nodemon --exec \"node --loader ts-node/esm\" first-app.ts"  },
   "keywords": [
     "first",
     "nodejs",
@@ -16,7 +17,11 @@
   "author": "daniel chukwudubem",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.4.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
