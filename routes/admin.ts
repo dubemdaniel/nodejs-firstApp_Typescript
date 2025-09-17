@@ -9,11 +9,15 @@ const router = express.Router();
 router.get(
   "/add-product",
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log('This is a product page')
-    // res.send('<form action="/admin/product" method="POST"><input type="text" name="title"><button type="submit">Add PRoduct</button></form>')
-    res.sendFile(path.join(rootDir, "views", "add-product.html"));
-  }
-);
+    res.render('add-product', {
+      pageTitle: "Add Product",
+      path: '/admin/add-product',
+      formsCSS: true,
+      productCSS: true, 
+      activeAddProduct:true
+   })
+   
+  });
 
 router.post("/product", (req: Request, res: Response, next: NextFunction) => {
   // console.log('this is the product info')

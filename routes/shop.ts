@@ -12,12 +12,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    // console.log('in another middleware')
-    // res.send("<h1>Hello from Express</h2>")
-    console.log("na me dey really hot ", products.map(me => {
-        return me.title
-    }))
-    return res.sendFile(path.join(__dirname, '../', 'views', 'shop.html'));
+    res.render('shop', {
+        prods: products,
+        pageTitle: "shop", 
+        path: "/",
+        hasProducts: products.length > 0,
+        activeShop: true, 
+        product: true
+
+    })
 });
 
 export { router as shopRoute };
