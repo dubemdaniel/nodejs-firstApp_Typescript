@@ -19,12 +19,8 @@ router.get(
    
   });
 
-router.post("/product", (req: Request, res: Response, next: NextFunction) => {
-  // console.log('this is the product info')
-
-  // if (!req.body.name) {
-  //     return res.status(400).json({error: "something went wrong"})
-  // }
+router.post("/add-product", (req: Request, res: Response, next: NextFunction) => {
+ 
   products.push({title: req.body.title});
   res.redirect("/");
 });
