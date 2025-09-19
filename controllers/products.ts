@@ -1,6 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 
+import {addProduct, getAllProducts} from '../models/product.js'
+
 export const products: { title: string }[] = [];
+
+
 
 export const getAddProduct = (
   req: Request,
@@ -21,13 +25,14 @@ export const postAddProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  products.push({ title: req.body.title });
+    const {title} = req.body.title
+  addProduct(title)
   res.redirect("/");
 };
 
 export const getProducts = (req: Request, res: Response, next: NextFunction) => {
     res.render('shop', {
-        prods: products,
+        prods: getAllProducts,
         pageTitle: "shop", 
         path: "/",
         hasProducts: products.length > 0,
