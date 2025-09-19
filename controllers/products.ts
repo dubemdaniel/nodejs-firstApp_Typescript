@@ -1,9 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 
-import {addProduct, getAllProducts} from '../models/product.js'
-
-export const products: { title: string }[] = [];
-
+import { addProduct, getAllProducts } from "../models/product.js";
 
 
 export const getAddProduct = (
@@ -20,24 +17,30 @@ export const getAddProduct = (
   });
 };
 
-export const postAddProduct = (
+export const postAddProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-    const {title} = req.body.title
-  addProduct(title)
+  console.log("yo nigga", req);
+  const title = req.body.title;
+  console.log("adding product:", title);
+  await addProduct(title);
   res.redirect("/");
 };
 
-export const getProducts = (req: Request, res: Response, next: NextFunction) => {
-    res.render('shop', {
-        prods: getAllProducts,
-        pageTitle: "shop", 
-        path: "/",
-        hasProducts: products.length > 0,
-        activeShop: true, 
-        product: true
-
-    })
-}
+export const getProducts = async(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+    const products = await getAllProducts()
+  res.render("shop", {
+    prods: products,
+    pageTitle: "shop",
+    path: "/",
+    hasProducts: products.length > 0,
+    activeShop: true,
+    product: true,
+  });
+};
