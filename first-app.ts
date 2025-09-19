@@ -2,7 +2,7 @@ import path from "path";
 import http from "http";
 import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
-
+import { notFound } from "./controllers/notFound.js";
 import { fileURLToPath } from "url";
 import { adminRoute } from "./routes/admin.js";
 import { shopRoute } from "./routes/shop.js";
@@ -24,13 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/admin", adminRoute);
 app.use(shopRoute);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(404).render('404', {
-   pageTitle: "404 - Not Found", 
-    message: "Help me Oh Lord",
-    path: req.url
-  })
-});
+app.use(notFound);
 
 const server = http.createServer(app);
 
