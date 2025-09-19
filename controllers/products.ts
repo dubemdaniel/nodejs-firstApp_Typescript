@@ -8,7 +8,7 @@ export const getAddProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  res.render("add-product", {
+  res.render("admin/add-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     formsCSS: true,
@@ -22,7 +22,6 @@ export const postAddProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("yo nigga", req);
   const title = req.body.title;
   console.log("adding product:", title);
   await addProduct(title);
@@ -35,7 +34,8 @@ export const getProducts = async(
   next: NextFunction
 ) => {
     const products = await getAllProducts()
-  res.render("shop", {
+    console.log(products.length > 0)
+  res.render("shop/product-list", {
     prods: products,
     pageTitle: "shop",
     path: "/",
