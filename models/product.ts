@@ -24,7 +24,7 @@ export const addProduct = async (
   try {
     const data = await fs.readFile(filePath, "utf-8");
     const products: Product[] = JSON.parse(data);
-    const id = Math.random().toString();
+    const id = Date.now().toString() + Math.random().toString(36);
     products.push({
       id,
       title,
@@ -64,16 +64,17 @@ export const getAllProducts = async (): Promise<Product[]> => {
   // return products
 };
 
-
-export const findById = async (id: string): Promise<Product | null> => {
+// this is for getting product detail, by getting product by their ID
+export const getProductById = async (id?: string): Promise<Product | null> => {
   try {
     const data = await fs.readFile(filePath, "utf-8");
     const products: Product[] = JSON.parse(data);
+
     
-    // Find the product with matching ID
-    const product = products.find(product => product.id === id);
-    
+    const product = products.find((product) => product.id === id);
+
     // Return the product if found, otherwise return null
+    console.log(product);
     return product || null;
   } catch (error) {
     console.error("Error reading products file:", error);

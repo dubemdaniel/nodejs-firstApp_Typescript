@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import {  getAllProducts } from "../models/product.js";
+import {  getAllProducts, getProductById } from "../models/product.js";
 
 
 
@@ -36,11 +36,12 @@ export const getIndex = async(req: Request, res: Response, next: NextFunction) =
 }
 export const getProduct = (req: Request, res: Response, next: NextFunction) => {
   const prodId = req.params.productId
-  
+  getProductById(prodId)
   console.log(prodId)
   res.redirect('/')
 
 }
+
 
 export const getCart = (req: Request, res: Response, next: NextFunction) => {
   res.render("shop/cart", {
