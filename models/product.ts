@@ -5,6 +5,7 @@ import fs from "fs/promises";
 const filePath = path.join(rootDir, "Data", "product.json");
 
 interface Product {
+  id: string;
   title: string;
   imageUrl: string;
   price: number;
@@ -23,7 +24,9 @@ export const addProduct = async (
   try {
     const data = await fs.readFile(filePath, "utf-8");
     const products: Product[] = JSON.parse(data);
+    const id = Math.random().toString();
     products.push({
+      id,
       title,
       imageUrl,
       price,
@@ -59,4 +62,21 @@ export const getAllProducts = async (): Promise<Product[]> => {
     return [];
   }
   // return products
+};
+
+
+export const findById = async (id: string): Promise<Product | null> => {
+  try {
+    const data = await fs.readFile(filePath, "utf-8");
+    const products: Product[] = JSON.parse(data);
+    
+    // Find the product with matching ID
+    const product = products.find(product => product.id === id);
+    
+    // Return the product if found, otherwise return null
+    return product || null;
+  } catch (error) {
+    console.error("Error reading products file:", error);
+    return null;
+  }
 };

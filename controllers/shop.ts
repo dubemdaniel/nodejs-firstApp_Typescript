@@ -34,11 +34,26 @@ export const getIndex = async(req: Request, res: Response, next: NextFunction) =
     // product: true,
   });
 }
+export const getProduct = (req: Request, res: Response, next: NextFunction) => {
+  const prodId = req.params.productId
+  
+  console.log(prodId)
+  res.redirect('/')
+
+}
 
 export const getCart = (req: Request, res: Response, next: NextFunction) => {
   res.render("shop/cart", {
     path: '/cart',
     pageTitle: 'Your Cart'
+  })
+
+}
+ 
+export const getOrders = (req: Request, res: Response, next: NextFunction) => {
+  res.render("shop/orders", {
+    path: '/orders',
+    pageTitle: 'Your Orders'
   })
 
  }
