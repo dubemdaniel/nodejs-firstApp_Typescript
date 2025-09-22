@@ -14,11 +14,11 @@ export const getProducts = async(
     console.log(products.length > 0)
   res.render("shop/product-list", {
     prods: products,
-    pageTitle: "shop",
-    path: "/",
-    hasProducts: products.length > 0,
-    activeShop: true,
-    product: true,
+    pageTitle: "All Products",
+    path: "/products",
+    // hasProducts: products.length > 0,
+    // activeShop: true,
+    // product: true,
   });
 };
 
@@ -29,8 +29,24 @@ export const getIndex = async(req: Request, res: Response, next: NextFunction) =
     prods: products,
     pageTitle: "shop",
     path: "/",
-    hasProducts: products.length > 0,
-    activeShop: true,
-    product: true,
+    // hasProducts: products.length > 0,
+    // activeShop: true,
+    // product: true,
   });
 }
+
+export const getCart = (req: Request, res: Response, next: NextFunction) => {
+  res.render("shop/cart", {
+    path: '/cart',
+    pageTitle: 'Your Cart'
+  })
+
+ }
+
+ export const getCheckout = (req: Request, res: Response, next: NextFunction) => {
+  res.render("shop/checkout", {
+    path: '/checkout',
+    pageTitle: 'Your Cart'
+  })
+
+ }

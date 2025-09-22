@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { addProduct } from "../models/product.js";
+import { getAllProducts } from "../models/product.js";
 
 export const getAddProduct = (
   req: Request,
@@ -20,8 +21,22 @@ export const postAddProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  const title = req.body.title;
-  console.log("adding product:", title);
-  await addProduct(title);
+  // const title = req.body.title;
+  const { title, imageUrl, price, description } = req.body;
+  console.log("adding product:", title, imageUrl, price, description);
+  await addProduct(title, imageUrl, price, description);
   res.redirect("/");
+};
+
+export const getProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const products = await getAllProducts();
+  res.render("admin/products", {
+    prods: products,
+    pageTitle: "Admin Products",
+    path: "/admin/products",
+  });
 };
