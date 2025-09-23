@@ -74,7 +74,7 @@ export const getProductById = async (id?: string): Promise<Product | null> => {
     const product = products.find((product) => product.id === id);
 
     // Return the product if found, otherwise return null
-    console.log(product);
+    // console.log(product);
     return product || null;
   } catch (error) {
     console.error("Error reading products file:", error);
