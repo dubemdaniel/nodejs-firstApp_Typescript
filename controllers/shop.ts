@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 
 import { getAllProducts, getProductById } from "../models/product.js";
+import { addToCart, getCartData } from "../models/cart.js"
+
 
 export const getProducts = async (
   req: Request,
@@ -50,18 +52,37 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getCart = (req: Request, res: Response, next: NextFunction) => {
-  res.render("shop/cart", {
-    path: "/cart",
-    pageTitle: "Your Cart",
-  });
+export const getCart = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const cart = await getCartData();
+    res.render("shop/cart", {
+      path: "/cart",
+      pageTitle: "Your Cart",
+      cart: cart.items,
+      totalPrice: cart.items.reduce((total, item) => total + item.price * item.quantity, 0),
+    });
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    next(error);
+  }
 };
 
-export const postCart = (req: Request, res: Response, next: NextFunction) => {
-  const prodId = req.body.productId
-  console.log("what is going on ", prodId)
-  res.redirect("/cart")
-}
+export const postCart = async (req: Request, res: Response, next: NextFunction) => {
+  const prodId = req.body.productId;
+  try {
+    const product = await getProductById(prodId);
+    if (!product) {
+      console.error("Product not found:", prodId);
+      return res.redirect("/products");
+    }
+    await addToCart(prodId, product);
+    console.log("Added to cart:", prodId);
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    next(error);
+  }
+};
 
 export const getOrders = (req: Request, res: Response, next: NextFunction) => {
   res.render("shop/orders", {
