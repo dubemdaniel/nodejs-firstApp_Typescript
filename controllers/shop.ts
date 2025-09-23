@@ -39,7 +39,6 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
   const prodId = req.params.productId;
   try {
     const product = await getProductById(prodId); 
-    console.log(product);
     res.render("shop/product-detail", {
       product,
       pageTitle: `product-detail${product ? product.title : ''}`,
@@ -57,6 +56,12 @@ export const getCart = (req: Request, res: Response, next: NextFunction) => {
     pageTitle: "Your Cart",
   });
 };
+
+export const postCart = (req: Request, res: Response, next: NextFunction) => {
+  const prodId = req.body.productId
+  console.log("what is going on ", prodId)
+  res.redirect("/cart")
+}
 
 export const getOrders = (req: Request, res: Response, next: NextFunction) => {
   res.render("shop/orders", {

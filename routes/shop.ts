@@ -1,7 +1,7 @@
 import express from "express";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { getProducts, getIndex, getCart, getCheckout, getOrders, getProduct  } from "../controllers/shop.js";
+import { getProducts, getIndex, getCart, getCheckout, getOrders, getProduct, postCart  } from "../controllers/shop.js";
 const router = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,6 +12,7 @@ router.get("/", getIndex);
 router.get("/products", getProducts);
 
 router.get("/cart", getCart);
+router.post("/cart", postCart);
 
 router.get("/products/:productId", getProduct);
 
