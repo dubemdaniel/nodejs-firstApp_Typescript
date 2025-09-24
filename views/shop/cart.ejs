@@ -1,6 +1,23 @@
 <%- include('../includes/head.ejs') %>
 </head>
-
 <body>
     <%- include('../includes/navigation.ejs') %>
+    <main>
+        <h1>Your Cart</h1>
+        <% if (cart && cart.length > 0) { %>
+            <ul>
+                <% cart.forEach(item => { %>
+                    <li>
+                        <%= item.title %> (Quantity: <%= item.quantity %>) - $<%= (item.price * item.quantity).toFixed(2) %>
+                    </li>
+                <% }); %>
+            </ul>
+            <h3>Total: $<%= totalPrice.toFixed(2) %></h3>
+        <% } else { %>
+            <p>Your cart is empty.</p>
+        <% } %>
+        <a href="/products">Continue Shopping</a>
+    </main>
     <%- include('../includes/end.ejs') %>
+</body>
+</html>

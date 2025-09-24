@@ -7,7 +7,7 @@ export const getAddProduct = (
   res: Response,
   next: NextFunction
 ) => {
-  res.render("admin/add-product", {
+  res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     formsCSS: true,
@@ -26,6 +26,25 @@ export const postAddProduct = async (
   console.log("adding product:", title, imageUrl, price, description);
   await addProduct(title, imageUrl, price, description);
   res.redirect("/");
+};
+
+export const getEditProduct = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const editMode = req.query.edit;
+
+  if (!editMode) {
+    return res.redirect("/");
+      }
+    
+    console.log('yeah, i clicked it')
+  res.render("admin/edit-product", {
+    pageTitle: "Edit Product",
+    path: "/admin/edit-product",
+    editing: editMode,
+  });
 };
 
 export const getProducts = async (
