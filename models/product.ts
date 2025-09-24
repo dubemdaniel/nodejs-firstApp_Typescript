@@ -64,6 +64,27 @@ export const getAllProducts = async (): Promise<Product[]> => {
   // return products
 };
 
+// this is for updating product that has been saved before
+export const updateProduct = async (
+  id: string,
+  updatedProduct: { title: string; imageUrl: string; price: number; description: string }
+): Promise<void> => {
+  try {
+    const data = await fs.readFile(filePath, "utf-8");
+    const products: Product[] = JSON.parse(data);
+    const productIndex = products.findIndex((product) => product.id === id);
+    if (productIndex === -1) {
+      throw new Error("Product not found");
+    }
+    products[productIndex] = { id, ...updatedProduct };
+    await fs.writeFile(filePath, JSON.stringify(products, null, 2));
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+};
+
+
 // this is for getting product detail, by getting product by their ID
 export const getProductById = async (id?: string): Promise<Product | null> => {
   try {
