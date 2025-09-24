@@ -102,3 +102,18 @@ export const getProductById = async (id?: string): Promise<Product | null> => {
     return null;
   }
 };
+
+export const deleteProduct = async (id: string): Promise<void> => {
+  try {
+    const data = await fs.readFile(filePath, "utf-8");
+    const products: Product[] = JSON.parse(data);
+    const updatedProducts = products.filter((product) => product.id !== id);
+    if (products.length === updatedProducts.length) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    await fs.writeFile(filePath, JSON.stringify(updatedProducts, null, 2));
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+};

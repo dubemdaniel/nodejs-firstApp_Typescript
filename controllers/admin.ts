@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { addProduct } from "../models/product.js";
-import { getProductById, updateProduct, getAllProducts } from "../models/product.js";
+import { getProductById, updateProduct, getAllProducts, deleteProduct } from "../models/product.js";
 
 export const getAddProduct = (
   req: Request,
@@ -84,4 +84,21 @@ export const getProducts = async (
     pageTitle: "Admin Products",
     path: "/admin/products",
   });
+};
+
+export const postDeleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { productId } = req.body;
+  console.log("Deleting product with ID:", productId);
+  try {
+    await deleteProduct(productId);
+    console.log("Deleted product:", productId);
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    next(error);
+  }
 };
