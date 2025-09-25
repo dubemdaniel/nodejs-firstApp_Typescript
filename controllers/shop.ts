@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { getAllProducts, getProductById } from "../models/product.js";
-import { addToCart, getCartData } from "../models/cart.js"
+import { addToCart, getCartData, deleteFromCart } from "../models/cart.js"
 
 
 export const getProducts = async (
@@ -80,6 +80,19 @@ export const postCart = async (req: Request, res: Response, next: NextFunction) 
     res.redirect("/cart");
   } catch (error) {
     console.error("Error adding to cart:", error);
+    next(error);
+  }
+};
+
+export const postDeleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
+  const { productId } = req.body;
+  console.log("Deleting cart item with productId:", productId);
+  try {
+    await deleteFromCart(productId);
+    console.log("Deleted cart item:", productId);
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error deleting cart item:", error);
     next(error);
   }
 };

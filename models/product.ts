@@ -4,6 +4,16 @@ import fs from "fs/promises";
 
 const filePath = path.join(rootDir, "Data", "product.json");
 
+interface CartItem {
+  productId: string;
+  quantity: number;
+  title: string;
+  price: number;
+}
+
+interface Cart {
+  items: CartItem[];
+}
 interface Product {
   id: string;
   title: string;

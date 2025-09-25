@@ -65,3 +65,19 @@ export const getCartData = async (): Promise<Cart> => {
     return { items: [] };
   }
 };
+
+export const deleteFromCart = async (productId: string): Promise<void> => {
+  try {
+    const data = await fs.readFile(filePath, "utf-8");
+    const cart: Cart = JSON.parse(data);
+    const updatedItems = cart.items.filter((item) => item.productId !== productId);
+    if (cart.items.length === updatedItems.length) {
+      throw new Error(`Cart item with productId ${productId} not found`);
+    }
+    cart.items = updatedItems;
+    await fs.writeFile(filePath, JSON.stringify(cart, null, 2));
+  } catch (error) {
+    console.error("Error deleting from cart:", error);
+    throw error;
+  }
+};

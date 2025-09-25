@@ -9,8 +9,12 @@
                 <% cart.forEach(item => { %>
                     <li>
                         <%= item.title %> (Quantity: <%= item.quantity %>) - $<%= (item.price * item.quantity).toFixed(2) %>
+                        <form action="/cart/delete-item" method="POST">
+                            <input type="hidden" name="productId" value="<%= item.productId %>">
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
                     </li>
-                <% }); %>
+                <% }) %>
             </ul>
             <h3>Total: $<%= totalPrice.toFixed(2) %></h3>
         <% } else { %>
