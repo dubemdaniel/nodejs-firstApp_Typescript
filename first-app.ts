@@ -6,7 +6,6 @@ import { notFound } from "./controllers/notFound.js";
 import { fileURLToPath } from "url";
 import { adminRoute } from "./routes/admin.js";
 import { shopRoute } from "./routes/shop.js";
-import db from "./util/database.js";
 
 // Recreate __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -17,14 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.set("views", "views");
-
-db.execute("SELECT * FROM products")
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.log("omo, better big error dey here oo ", err);
-  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
