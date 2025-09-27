@@ -6,7 +6,7 @@ import { notFound } from "./controllers/notFound.js";
 import { fileURLToPath } from "url";
 import { adminRoute } from "./routes/admin.js";
 import { shopRoute } from "./routes/shop.js";
-
+import sequelize from "./util/database.js";
 // Recreate __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
