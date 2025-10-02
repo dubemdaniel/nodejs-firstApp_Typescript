@@ -1,12 +1,18 @@
-import mysql from 'mysql2/promise';
+import mongoose from 'mongoose';
 
-const Pool: mysql.Pool = mysql.createPool({
-    host: 'localhost',
-    user: 'dubem',
-    database: 'first-app',
-    password: 'your_password'
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/first-app', {
+      // Removed deprecated options for Mongoose 7+
+    });
+    console.log('MongoDB connected');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
 
-export default Pool;
+// Connect immediately when module is imported
+connectDB();
 
-
+export default mongoose;
