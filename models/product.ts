@@ -1,31 +1,25 @@
-import rootDir from "../util/path.js";
-import path from "path";
-import fs from "fs/promises";
-import Pool from "../util/database.js"
 
-const filePath = path.join(rootDir, "Data", "product.json");
+// import Pool from "../util/database.js"
+import mongoose, { Schema, Document } from "mongoose";
 
-interface CartItem {
-  productId: string;
-  quantity: number;
-  title: string;
-  price: number;
-}
-
-interface Cart {
-  items: CartItem[];
-}
-interface Product {
-  id: string;
+export interface Product extends Document {
   title: string;
   imageUrl: string;
   price: number;
-  description: string;
+  description: string
 }
 
-// let products: Product[] = []
+const productSchema = new Schema<Product>({
+  title: { type: String, required: true, maxlength: 255 },
+  imageUrl: { type: String, required: true },
+  price: { type: Number, required: true },
+  description: { type: String, required: true },
+}, { timestamps: true }
+)
 
-// this is for adding products
+const ProductModel = mongoose.model<Product>('product', productSchema)
+
+
 export const addProduct = async (
   title: string,
   imageUrl: string,
@@ -33,69 +27,64 @@ export const addProduct = async (
   description: string
 ): Promise<void> => {
   try {
-    await Pool.execute(
-      "INSERT INTO products (title, imageUrl, price, description) VALUES (?, ?, ?, ?)",
-      [title, imageUrl, price, description]
-    );
+    await ProductModel.create({ title, imageUrl, price, description });
+    console.log('Added product:', title);
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error('Error adding product:', error);
     throw error;
   }
 };
 
-// this is for getting or retrieving products
+export const updateProduct = async (
+  id: string,
+  updatedProduct: { title: string; imageUrl: string; price: number; description: string }
+): Promise<void> => {
+  try {
+    const result = await ProductModel.updateOne(
+      { _id: id },
+      { $set: updatedProduct }
+    );
+    if (result.matchedCount === 0) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    console.log('Updated product:', id);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id: string): Promise<void> => {
+  try {
+    const result = await ProductModel.deleteOne({ _id: id });
+    if (result.deletedCount === 0) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    console.log('Deleted product:', id);
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
+};
+
 export const getAllProducts = async (): Promise<Product[]> => {
   try {
-    const [rows] = await Pool.execute("SELECT * FROM products");
-    return rows as Product[];
+    const products = await ProductModel.find().exec();
+    return products;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     return [];
   }
 };
 
-// this is for updating product that has been saved before
-export const updateProduct = async (
-  id: number,
-  updatedProduct: { title: string; imageUrl: string; price: number; description: string }
-): Promise<void> => {
+export const getProductById = async (id: string): Promise<Product | null> => {
   try {
-    const [result]: any = await Pool.execute(
-      "UPDATE products SET title = ?, imageUrl = ?, price = ?, description = ? WHERE id = ?",
-      [updatedProduct.title, updatedProduct.imageUrl, updatedProduct.price, updatedProduct.description, id]
-    );
-    if (result.affectedRows === 0) {
-      throw new Error(`Product with ID ${id} not found`);
-    }
-    console.log("Updated product:", id);
+    const product = await ProductModel.findById(id).exec();
+    return product;
   } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
-  }
-};
-
-
-// this is for getting product detail, by getting product by their ID
-export const getProductById = async (id?: string): Promise<Product | null | undefined> => {
-  try {
-    const [rows] = await Pool.execute("SELECT * FROM products WHERE id = ?", [id]);
-    const products = rows as Product[];
-    return products.length > 0 ? products[0] : null;
-  } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error('Error fetching product:', error);
     return null;
   }
 };
 
-export const deleteProduct = async (id: number): Promise<void> => {
-  try {
-    const [result]: any = await Pool.execute("DELETE FROM products WHERE id = ?", [id]);
-    if (result.affectedRows === 0) {
-      throw new Error(`Product with ID ${id} not found`);
-    }
-    console.log("Deleted product:", id);
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    throw error;
-  }
-};
+export default ProductModel;

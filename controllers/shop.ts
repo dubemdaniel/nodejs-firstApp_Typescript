@@ -1,24 +1,24 @@
 import { Request, Response, NextFunction } from "express";
 
 import { getAllProducts, getProductById } from "../models/product.js";
-import { addToCart, getCartData, deleteFromCart } from "../models/cart.js"
-
+import { addToCart, deleteFromCart, getCartData } from "../models/cart.js";
 
 export const getProducts = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const products = await getAllProducts();
-  console.log(products.length > 0);
-  res.render("shop/product-list", {
-    prods: products,
-    pageTitle: "All Products",
-    path: "/products",
-    // hasProducts: products.length > 0,
-    // activeShop: true,
-    // product: true,
-  });
+  try {
+    const products = await getAllProducts();
+    res.render("shop/product-list", {
+      prods: products,
+      pageTitle: "All Products",
+      path: "/products",
+    });
+  } catch (error) {
+    console.error("Error in getProducts:", error);
+    next(error);
+  }
 };
 
 export const getIndex = async (
@@ -37,62 +37,71 @@ export const getIndex = async (
     // product: true,
   });
 };
-export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
+export const getProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const prodId = req.params.productId;
   try {
-    const product = await getProductById(prodId); 
+    if (!prodId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    }
+    const product = await getProductById(prodId);
+
     res.render("shop/product-detail", {
       product,
-      pageTitle: `product-detail${product ? product.title : ''}`,
+      pageTitle: `Product Detail${product ? product.title : ""}`,
       path: "/products",
     });
   } catch (error) {
     console.error("Error fetching product:", error);
-    next(error); 
+    next(error);
   }
 };
 
 export const getCart = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     const cart = await getCartData();
-    res.render("shop/cart", {
-      path: "/cart",
-      pageTitle: "Your Cart",
-      cart: cart.items,
-      totalPrice: cart.items.reduce((total, item) => total + item.price * item.quantity, 0),
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      cart,
+      totalPrice: cart.reduce((total, item) => total + item.price * item.quantity, 0),
     });
   } catch (error) {
-    console.error("Error fetching cart:", error);
+    console.error('Error fetching cart:', error);
     next(error);
   }
 };
 
 export const postCart = async (req: Request, res: Response, next: NextFunction) => {
-  const prodId = req.body.productId;
+  const prodId = req.body.productId; 
   try {
     const product = await getProductById(prodId);
     if (!product) {
-      console.error("Product not found:", prodId);
-      return res.redirect("/products");
+      console.error('Product not found:', prodId);
+      return res.redirect('/products');
     }
     await addToCart(prodId, product);
-    console.log("Added to cart:", prodId);
-    res.redirect("/cart");
+    console.log('Added to cart:', prodId);
+    res.redirect('/cart');
   } catch (error) {
-    console.error("Error adding to cart:", error);
+    console.error('Error adding to cart:', error);
     next(error);
   }
 };
 
+
 export const postDeleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
-  const { productId } = req.body;
-  console.log("Deleting cart item with productId:", productId);
+  const productId = req.body.productId; 
   try {
     await deleteFromCart(productId);
-    console.log("Deleted cart item:", productId);
-    res.redirect("/cart");
+    console.log('Deleted cart item:', productId);
+    res.redirect('/cart');
   } catch (error) {
-    console.error("Error deleting cart item:", error);
+    console.error('Error deleting cart item:', error);
     next(error);
   }
 };

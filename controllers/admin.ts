@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { addProduct } from "../models/product.js";
-import { getProductById, updateProduct, getAllProducts, deleteProduct } from "../models/product.js";
+import {
+  getProductById,
+  updateProduct,
+  getAllProducts,
+  deleteProduct,
+} from "../models/product.js";
 
 export const getAddProduct = (
   req: Request,
@@ -9,8 +14,8 @@ export const getAddProduct = (
 ) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
-      path: "/admin/add-product",
-    editing:false,
+    path: "/admin/add-product",
+    editing: false,
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
@@ -22,10 +27,14 @@ export const postAddProduct = async (
   res: Response,
   next: NextFunction
 ) => {
-  // const title = req.body.title;
   const { title, imageUrl, price, description } = req.body;
-  await addProduct(title, imageUrl, price, description);
-  res.redirect("/");
+  try {
+    await addProduct(title, imageUrl, parseFloat(price), description);
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error adding product:", error);
+    next(error);
+  }
 };
 
 export const getEditProduct = async (
@@ -35,12 +44,13 @@ export const getEditProduct = async (
 ) => {
   const editMode = req.query.edit;
   const prodId = req.params.productId;
-
   if (!editMode) {
     return res.redirect("/");
   }
-
   try {
+    if (!prodId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    }
     const product = await getProductById(prodId);
     if (!product) {
       console.error("Product not found:", prodId);
@@ -57,6 +67,7 @@ export const getEditProduct = async (
     next(error);
   }
 };
+
 export const postEditProduct = async (
   req: Request,
   res: Response,
@@ -64,7 +75,13 @@ export const postEditProduct = async (
 ) => {
   const { productId, title, imageUrl, price, description } = req.body;
   try {
-    await updateProduct(productId, { title, imageUrl, price: parseFloat(price), description });
+    await updateProduct(productId, {
+      title,
+      imageUrl,
+      price: parseFloat(price),
+      description,
+    });
+    console.log("Updated product:", productId);
     res.redirect("/admin/products");
   } catch (error) {
     console.error("Error updating product:", error);
@@ -72,18 +89,22 @@ export const postEditProduct = async (
   }
 };
 
-
 export const getProducts = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const products = await getAllProducts();
-  res.render("admin/products", {
-    prods: products,
-    pageTitle: "Admin Products",
-    path: "/admin/products",
-  });
+  try {
+    const products = await getAllProducts();
+    res.render("admin/products", {
+      prods: products,
+      pageTitle: "Admin Products",
+      path: "/admin/products",
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    next(error);
+  }
 };
 
 export const postDeleteProduct = async (
@@ -92,7 +113,6 @@ export const postDeleteProduct = async (
   next: NextFunction
 ) => {
   const { productId } = req.body;
-  console.log("Deleting product with ID:", productId);
   try {
     await deleteProduct(productId);
     console.log("Deleted product:", productId);
