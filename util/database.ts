@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/first-app', {
-      // Removed deprecated options for Mongoose 7+
+    await mongoose.connect('mongodb+srv://princedaniel7890:dubemshop@cluster0.x5qlnja.mongodb.net/', {
+     
     });
     console.log('MongoDB connected');
   } catch (error) {
