@@ -1,10 +1,16 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+
+dotenv.config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://princedaniel7890:dubemshop@cluster0.x5qlnja.mongodb.net/', {
-     
-    });
+    const mongoURI = process.env.MONGO_URI;
+    if (!mongoURI) {
+      throw new Error('MONGO_URI is not defined in .env file');
+    }
+    await mongoose.connect(mongoURI, {});
     console.log('MongoDB connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);
@@ -12,7 +18,7 @@ const connectDB = async () => {
   }
 };
 
-// Connect immediately when module is imported
+
 connectDB();
 
 export default mongoose;
