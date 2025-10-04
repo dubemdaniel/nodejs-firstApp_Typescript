@@ -33,7 +33,6 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "express-handlebars": "^8.0.1",
     "mongodb": "^6.20.0",
     "mongoose": "^8.18.3",
     "pug": "^3.0.3"
