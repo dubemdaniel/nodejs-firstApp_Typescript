@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { addProduct } from "../models/product.js";
+import CartItemModel from "../models/cart.js";
 import {
   getProductById,
   updateProduct,
