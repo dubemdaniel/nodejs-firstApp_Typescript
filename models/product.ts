@@ -1,5 +1,4 @@
 
-// import Pool from "../util/database.js"
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface Product extends Document {
